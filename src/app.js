@@ -1,13 +1,16 @@
 import express from "express";
 import config from "./config/config.js";
 import productRoutes from "./routes/productRoute.js";
-
-
+import connectDB from "./config/database.js";
 
 const PORT = process.env.PORT || 3000;
 const VERSION = process.env.VERSION || "0.0.1";
 
 const app = express();
+
+connectDB();
+
+app.use(express.json());
 
 app.use("/api/products", productRoutes);
 
