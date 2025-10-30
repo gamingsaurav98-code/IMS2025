@@ -1,3 +1,4 @@
+import authRoutes from "./routes/authRoutes.js";
 import bodyParser from "body-parser";
 import config from "./config/config.js";
 import connectDB from "./config/database.js";
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
 
 
 app.listen(config.port, () => {

@@ -1,0 +1,49 @@
+import User from '../models/User.js';
+import bcrypt from 'bcryptjs';
+
+const login = async(data)=>{
+
+const user = await User.findOne({email: data.email});
+
+const isPasswordMatch = bcrypt.compareSync(data.password , user.password);
+
+if(!isPasswordMatch) throw {  message: "Incorrect email or password. " };
+
+return {
+    id: user._id,
+     name: user.name,
+     email: user.email,
+     phone: user.phone,
+     address: user.address,
+};
+};
+
+
+
+
+const register = async(data) => {
+
+    const user = await User.findOne({ email: data.email });
+
+       if (user) throw{ statusCode: 400, message: "user is already exist. "};
+
+    const hashedPassword = bcrypt.hashSync(data.password);
+    
+
+return await  User.create({
+    name: data.name,
+    email: data.email,
+    password: hashedPassword,
+    phone: data.phone,
+    address: data.address,
+});
+
+
+};
+
+
+
+
+
+
+export default { register, login };
