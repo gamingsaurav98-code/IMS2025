@@ -1,7 +1,10 @@
-import express from "express";
+import bodyParser from "body-parser";
 import config from "./config/config.js";
-import productRoutes from "./routes/productRoute.js";
 import connectDB from "./config/database.js";
+import express from "express";
+import productRoutes from "./routes/productRoute.js";
+import userRoutes from "./routes/userRoute.js";
+
 
 const PORT = process.env.PORT || 3000;
 const VERSION = process.env.VERSION || "0.0.1";
@@ -10,9 +13,7 @@ const app = express();
 
 connectDB();
 
-app.use(express.json());
-
-app.use("/api/products", productRoutes);
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
   res.json({
@@ -21,6 +22,11 @@ app.get("/", (req, res) => {
     port: config.port,
   });
 });
+
+
+app.use("/api/products", productRoutes);
+app.use("/api/users", userRoutes);
+
 
 app.listen(config.port, () => {
   console.log(`Server is running on port ${config.port}....`);
