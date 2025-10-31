@@ -3,7 +3,6 @@ import bodyParser from "body-parser";
 import config from "./config/config.js";
 import connectDB from "./config/database.js";
 import express from "express";
-import productRoutes from "./routes/productRoute.js";
 import userRoutes from "./routes/userRoute.js";
 
 
@@ -25,9 +24,8 @@ app.get("/", (req, res) => {
 });
 
 
-app.use("/api/products", productRoutes);
-app.use("/api/users", userRoutes);
-app.use("/api/auth", authRoutes);
+app.use("/api/users",  userRoutes);
+app.use("/api/auth",  authRoutes);
 
 
 app.listen(config.port, () => {

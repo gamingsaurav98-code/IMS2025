@@ -1,5 +1,6 @@
 import productService from "../services/productService.js";
 
+
 const getProducts = async (req, res) => {
   //request query
   const products = await productService.getProducts(req.query);
@@ -24,6 +25,7 @@ const getProductById = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
+  console.log (req.user);
   try {
     const data = await productService.createProduct(req.body);
 
@@ -33,7 +35,7 @@ const createProduct = async (req, res) => {
   }
 };
 
-const updatedProduct = async (req, res) => {
+const updateProduct = async (req, res) => {
   const id = req.params.id;
 
   try {
@@ -61,6 +63,6 @@ export default {
   getProducts,
   getProductById,
   createProduct,
-  updatedProduct,
+  updateProduct,
   deleteProduct,
 };

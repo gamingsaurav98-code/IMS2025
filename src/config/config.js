@@ -8,6 +8,7 @@ const config = {
   status:"ok",
   name: process.env.NAME || "IMS202506",
   mongodbUri: process.env.MONGODB_URI || "mongodb://localhost:27017/IMS202506",
+  jwtSecret: process.env.JWT_SECRET || " ",
 };
 
 export default config;
