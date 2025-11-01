@@ -1,15 +1,42 @@
 import express from "express";
 import productController from "../controllers/productController.js";
+import auth from "../middlewares/auth.js";
+import roleBasedAuth from "../middlewares/roleBasedAuth.js";
+import { MERCHANT } from "../constants/roles.js";
 
 
 const router = express.Router();
 
 //URL: /api/users
-router.post("/", productController.createProduct);
+router.post("/",
+     auth, 
+   
+     roleBasedAuth(MERCHANT), 
+     productController.createProduct
+    );
+
 router.get("/", productController.getProducts);
-router.get("/:id", productController.getProductById);
-router.put("/:id", productController.updateProduct);
-router.delete("/:id", productController.deleteProduct);
+
+router.get(
+  "/:id",
+  auth,
+  roleBasedAuth(MERCHANT),
+  productController.getProductById
+);
+
+router.put(
+  "/:id",
+  auth,
+  roleBasedAuth(MERCHANT),
+  productController.updateProduct
+);
+
+router.delete(
+  "/:id",
+  auth,
+  roleBasedAuth(MERCHANT),
+  productController.deleteProduct
+);
 
 
 

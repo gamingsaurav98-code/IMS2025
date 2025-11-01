@@ -15,6 +15,7 @@ return {
      email: user.email,
      phone: user.phone,
      address: user.address,
+     roles: user.roles,
 };
 };
 
@@ -36,6 +37,8 @@ return await  User.create({
     password: hashedPassword,
     phone: data.phone,
     address: data.address,
+    id: data.id,
+    
 });
 
 

@@ -54,7 +54,7 @@ const register = async (req, res) => {
 
     res.cookie("authToken", authToken, { maxAge: 86400 * 1000 });
 
-    res.status(201).json(data);
+    res.json(data);
   } catch (error) {
     res.status(error.statusCode || 500).send(error.message);
   }

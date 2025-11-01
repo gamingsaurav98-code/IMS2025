@@ -1,4 +1,5 @@
 import mongoose  from "mongoose";
+import { MERCHANT, USER, ADMIN } from "../constants/roles.js";
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -45,10 +46,10 @@ const userSchema = new mongoose.Schema({
       required: [true, "Please provide user province"],
     },
   },
-  role: {
+  roles: {
     type: [String],
-    default: "CUSTOMER",
-    enum: ["CUSTOMER", "ADMIN"],
+    default: USER,
+    enum: [USER, ADMIN, MERCHANT],
   },
   profileImageUrl: {
     type: String,
@@ -59,6 +60,8 @@ const userSchema = new mongoose.Schema({
     default: Date.now(),
     immutable: true,
   },
+
+ 
 });
         
 const model = mongoose.model("User", userSchema);

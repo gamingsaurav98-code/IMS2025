@@ -1,10 +1,11 @@
 import productService from "../services/productService.js";
 
 
+
 const getProducts = async (req, res) => {
   //request query
   const products = await productService.getProducts(req.query);
-  console.log(req.headers.cookie);
+
 
   res.status(200).json(products);
 };
@@ -26,11 +27,11 @@ const getProductById = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
-  console.log (req.user);
-  try {
-    const data = await productService.createProduct(req.body);
 
-    res.status(201).json(data);
+  try {
+    const data = await productService.createProduct(req.body, req.user.id);
+
+    res.status(201).json(data) ;
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -40,11 +41,11 @@ const updateProduct = async (req, res) => {
   const id = req.params.id;
 
   try {
-    const data = await productService.updateProduct(id, req.body);
+    const data = await productService.updateProduct(id, req.body, req.user.id);
 
     res.status(200).json(data);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(error.statusCode || 500).send(error.message);
   }
 };
 
@@ -52,11 +53,11 @@ const deleteProduct = async (req, res) => {
   const id = req.params.id;
 
   try {
-    const data = await productService.deleteProduct(id);
+    const data = await productService.deleteProduct(id, req.user.id);
     
     res.status(200).send("product deleted successfully");
   } catch (error) {
-    error.status(500).send("Product not deleted");
+    res.status(error.statusCode || 500).send(error.message);
   }
 };
 
