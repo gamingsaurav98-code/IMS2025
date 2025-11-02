@@ -27,11 +27,12 @@ const getProductById = async (req, res) => {
 };
 
 const createProduct = async (req, res) => {
+ 
 
   try {
-    const data = await productService.createProduct(req.body, req.user.id);
+    const data = await productService.createProduct(req.body, req.files, req.user.id);
 
-    res.status(201).json(data) ;
+    res.status(201).json(data);
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -41,7 +42,12 @@ const updateProduct = async (req, res) => {
   const id = req.params.id;
 
   try {
-    const data = await productService.updateProduct(id, req.body, req.user.id);
+    const data = await productService.updateProduct(
+      id,
+      req.body,
+      req.files,
+      req.user.id
+    );
 
     res.status(200).json(data);
   } catch (error) {

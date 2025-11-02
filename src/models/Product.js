@@ -28,7 +28,9 @@ const productSchema = new mongoose.Schema({
     max: [1000000, "Price cannot exceed 1,000,000"],
   },
 
-  imageUrls: [String],
+  imageUrls: {
+    type: [String],
+  },
 
   description: String,
 

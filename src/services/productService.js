@@ -1,4 +1,5 @@
 import Product from "../models/Product.js";
+import uploadFile from "../utils/file.js";
 
 
 const getProducts = async(query) => {
@@ -47,12 +48,19 @@ const getProductById = (id) => {
   return product;
 };
 
-const createProduct = async(data, createdBy) => {
+const createProduct = async(data,files, createdBy) => {
+
+  
+
+ const uploadedFiles = await uploadFile(files);
+
   const createdProduct = await Product.create({
-    ...data,
-     createdBy,
-  });
-  return createdProduct;
+
+  ...data,
+   createdBy,
+imageUrls: uploadedFiles.map((item) => item?.url)
+});
+ return createdProduct;
 }
 
 
@@ -73,7 +81,20 @@ const updateProduct = async(id, data, userId) => {
 
   }
 
-  const updatedProduct = await Product.findByIdAndUpdate(id, data, { new:true });
+const updateData = data;
+
+
+if(files.length > 0) {
+
+   const uploadedFiles = await uploadFile(files);
+   updateData.imageUrls = uploadedFiles.map((item) => item?.url);
+}
+
+  const updatedProduct = await Product.findByIdAndUpdate(
+    
+    id,
+ updateData,
+  { new:true });
 
   return updatedProduct;
 };
