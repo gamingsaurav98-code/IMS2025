@@ -1,58 +1,51 @@
-import mongoose  from "mongoose";
-import { MERCHANT, USER, ADMIN } from "../constants/roles.js";
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Please provide product name"],
+    required: [true, "User name is required."],
   },
   email: {
     type: String,
-    required: [true, "Please provide user email"],
+    required: [true, "User email is required."],
     trim: true,
     lowercase: true,
-    unique: true,
     validate: {
-      validator: function (v) {
-        const emailRegex =  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-        return emailRegex.test(v);
+      validator: (value) => {
+        const emailRegex = /^((?!\.)[\w\-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
+
+        return emailRegex.test(value);
       },
-      message: "invalid email address!",
-    },  
+      message: "Invalid email address.",
+    },
   },
   password: {
     type: String,
-    required: [true, "Please provide user password"],
-  
+    required: [true, "User password is required."],
+    minLength: [6, "Password length must be greater than 6."],
   },
-  phone: {
-    type: String,
-    required: [true, "Please provide user phone number"],
-    unique: [true, "Phone number must be unique"],
-  },
+
   address: {
-    country: {
-      type: String,
-          },
     city: {
       type: String,
-      required: [true, "Please provide user city"],
+      required: [true, "User city address is required."],
+    },
+    country: {
+      type: String,
+      default: "Nepal",
+    },
+    province: {
+      type: String,
+      required: [true, "User province is required."],
     },
     street: {
       type: String,
     },
-    province: {
-      type: String,
-      required: [true, "Please provide user province"],
-    },
   },
-  roles: {
-    type: [String],
-    default: USER,
-    enum: [USER, ADMIN, MERCHANT],
-  },
-  profileImageUrl: {
+  phone: {
     type: String,
+    required: [true, "User phone number is required."],
+    unique: [true, "Phone number must be unique."],
   },
 
   createdAt: {
@@ -60,10 +53,8 @@ const userSchema = new mongoose.Schema({
     default: Date.now(),
     immutable: true,
   },
-
- 
 });
-        
+
 const model = mongoose.model("User", userSchema);
 
 export default model;

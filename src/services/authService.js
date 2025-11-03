@@ -2,6 +2,8 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import ResetPassword from "../models/ResetPassword.js";
 import sendEmail from '../utils/email.js';
+import config from "../../src/config/config.js";
+
 
 const login = async(data)=>{
 
@@ -37,7 +39,28 @@ await ResetPassword.create({
     token,
 });
 
-await sendEmail("ASD",{subject: "TST" , message: "S"});
+await sendEmail(email, {
+  subject: "Reset password link sent",
+  body: `
+<div>
+
+<h1>please click the link to reset your password.</h1>
+<a
+  href="${config.appUrl}/reset-password?token=${token}&userId=${user.id}"
+  style="
+          padding: 5px 15px;
+          background-color: lightblue;
+          color: black;
+          text-decoration: none;
+        "
+     >Reset password
+  </a>
+</div>
+
+
+
+    `,
+});
   return {message: "Reset password link sent successfully. "};
 };
 

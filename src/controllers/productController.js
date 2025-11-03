@@ -1,40 +1,35 @@
 import productService from "../services/productService.js";
 
-
-
 const getProducts = async (req, res) => {
-  //request query
+  // Request query
   const products = await productService.getProducts(req.query);
-
 
   res.status(200).json(products);
 };
 
 const getProductById = async (req, res) => {
+  // Request params
   try {
     const id = req.params.id;
-    const product = await productService.getProductById(id);
 
-    if (!product) {
-      return res.status(404).send("Product not found");
-    }
+    const product = await productService.getProductById(id);
 
     res.json(product);
   } catch (error) {
-    console.error("Error fetching product:", error);
-    res.status(500).send("Internal Server Error");
+    res.status(error.statusCode || 500).send(error.message);
   }
 };
 
 const createProduct = async (req, res) => {
- 
-
   try {
-    const data = await productService.createProduct(req.body, req.files, req.user.id);
+    const data = await productService.createProduct(
+      req.body,
+      req.files,
+    );
 
     res.status(201).json(data);
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(error.statusCode || 500).send(error.message);
   }
 };
 
@@ -45,11 +40,10 @@ const updateProduct = async (req, res) => {
     const data = await productService.updateProduct(
       id,
       req.body,
-      req.files,
-      req.user.id
+      req.files
     );
 
-    res.status(200).json(data);
+    res.status(201).json(data);
   } catch (error) {
     res.status(error.statusCode || 500).send(error.message);
   }
@@ -59,9 +53,9 @@ const deleteProduct = async (req, res) => {
   const id = req.params.id;
 
   try {
-    const data = await productService.deleteProduct(id, req.user.id);
-    
-    res.status(200).send("product deleted successfully");
+    await productService.deleteProduct(id);
+
+    res.send(`Product deleted successfully with id: ${id}`);
   } catch (error) {
     res.status(error.statusCode || 500).send(error.message);
   }
@@ -69,8 +63,8 @@ const deleteProduct = async (req, res) => {
 
 export default {
   getProducts,
-  getProductById,
   createProduct,
+  getProductById,
   updateProduct,
   deleteProduct,
 };

@@ -9,7 +9,7 @@ token: {
 },
 expiresAt: {
   type: Date,
-  default: () => Date.now() + 3600000, //1 hous from now
+  default: () => Date.now() + 3600000, //1 hours from now
 
 },
 isUsed: {

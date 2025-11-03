@@ -114,9 +114,18 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const logout = async (req,res) => {
+  res.clearCookie("authToken");
+
+  res.json({ message: "Logout successfully. "});
+};
+
+
+
 export default {
   register,
   login,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  logout
 };

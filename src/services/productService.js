@@ -1,131 +1,93 @@
 import Product from "../models/Product.js";
 import uploadFile from "../utils/file.js";
 
-
-const getProducts = async(query) => {
-const { brands, category, min, max, name, limit, offset } = query;
-
-
-const sort = JSON.parse(query.sort || "{}");
-const filters = {};
+const createProduct = async (data, files) => {
+  const uploadedFiles = await uploadFile(files);
 
 
 
-if ( brands) {
-  const brandItems = brands.split(",");
 
-  filters.brand = {$in: brandItems };
-}
-if (category) filters.category = category;
+  const createdProduct = await Product.create({
+    ...data,
+    imageUrls: uploadedFiles.map((item) => item?.url),
 
-if (min) filters.price = { $gte: min };
-if (max) filters.price = {...filters.price, $lte: max };
-
-if(name) filters.name = { $regex: name, $options: "i"};
-
-console.log(filters);
-
- const products = await Product.find(filters)
- .sort(sort)
- .limit(limit)
- .skip(offset);
-
-  return products;
+  });
+ await createdProduct.save();
+  return createdProduct;
 };
 
-const getProductById = (id) => {
+const deleteProduct = async (id) => {
+  const product = await getProductById(id);
 
-  const product = Product.findById(id);
+  
 
-    if (!product) {
-      throw {
-        statusCode: 404,
-        message: "Product not found",
-      };
-    }
+  await Product.findByIdAndDelete(id);
+};
 
+const getProductById = async (id) => {
+  const product = await Product.findById(id);
+
+  if (!product) {
+    throw {
+      statusCode: 404,
+      message: "Product not found.",
+    };
+  }
+
+  if (product.stock < 1) {
+    throw {
+      message: "Product not available",
+    };
+  }
 
   return product;
 };
 
-const createProduct = async(data,files, createdBy) => {
+const getProducts = async (query) => {
+  const { brands, category, min, max, limit, name, offset, createdBy } = query;
 
-  
+  const sort = JSON.parse(query.sort || "{}");
+  const filters = {};
 
- const uploadedFiles = await uploadFile(files);
+  if (brands) filters.brand = { $in: brands.split(",") };
+  if (category) filters.category = category;
+  if (min) filters.price = { $gte: min };
+  if (max) filters.price = { ...filters.price, $lte: max };
+  if (name) filters.name = { $regex: name, $options: "i" };
 
-  const createdProduct = await Product.create({
+  if (createdBy) filters.createdBy = createdBy;
 
-  ...data,
-   createdBy,
-imageUrls: uploadedFiles.map((item) => item?.url)
-});
- return createdProduct;
-}
+  const products = await Product.find(filters)
+    .sort(sort)
+    .limit(limit)
+    .skip(offset);
+
+  return products;
+};
+
+const updateProduct = async (id, data, files) => {
+  const product = await getProductById(id);
 
 
-const updateProduct = async(id, data, userId) => {
-  const product = Product.findById(id);
 
-  if(!product) {
-    throw {
-      statusCode: 404,
-      message: "Product not found",
-    };
+  const updateData = data;
+
+  if (files && files.length > 0) {
+    const uploadedFiles = await uploadFile(files);
+    updateData.imageUrls = uploadedFiles.map((item) => item?.url);
   }
-    if(product.createdBy != userId){
-    throw {
-      statusCode: 404,
-      message: "Access Denied. ",
-    };
 
-  }
-
-const updateData = data;
-
-
-if(files.length > 0) {
-
-   const uploadedFiles = await uploadFile(files);
-   updateData.imageUrls = uploadedFiles.map((item) => item?.url);
-}
-
-  const updatedProduct = await Product.findByIdAndUpdate(
-    
-    id,
- updateData,
-  { new:true });
+  const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
 
   return updatedProduct;
 };
 
-
-const deleteProduct = async (id, userId) => {
-const product = Product.findById(id);
-    if (!product) {
-      throw {
-        statusCode: 404,
-        message: "Product not found",
-      };
-    }
-    if (product.createdBy != userId) {
-      throw {
-        statusCode: 404,
-        message: "Access Denied. ",
-      };
-    }
-
-
-await Product.findByIdAndDelete(id);
-
-};
-
-
-
 export default {
-  getProducts,
-  getProductById,
   createProduct,
-  updateProduct,
   deleteProduct,
+  getProductById,
+  getProducts,
+  updateProduct,
 };

@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const config = {
+  appUrl:process.env.APP_URL || "",
   port: process.env.PORT || 3000,
   version: process.env.VERSION || "0.0.1",
   status: "ok",

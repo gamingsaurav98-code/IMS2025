@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import cpnfig from "./config.js";
+import config from "./config.js";
 
 async function connectDB() {
   try {
     const status = await mongoose.connect(
-   cpnfig.mongodbUri
+   config.mongodbUri
     );
     console.log(`MongoDB connected successfully: ${status.connection.host}`);
 
