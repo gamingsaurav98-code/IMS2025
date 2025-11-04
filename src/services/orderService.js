@@ -1,4 +1,5 @@
 import Order from "../models/Order.js";
+import Product from "../models/Product.js";
 import crypto from "crypto";
 import mongoose from "mongoose";
 
@@ -30,8 +31,32 @@ const getOrderById = async (customerId) => {
 const createOrder = async (data) => {
   const orderNumber = crypto.randomUUID();
 
-  return await Order.create({ ...data, orderNumber });
+  // Loop through all order items and update their stock
+ for (const item of data.orderItems) {
+
+    await updateProductStock(item.productId, item.quantity);
+
+  }
+  return await Order.create({ ...data,  orderNumber });
 };
+
+
+
+const updateProductStock = async (productId,quantity) => {
+  const product = await Product.findByIdAndUpdate(productId);
+ 
+
+
+  if (Product.stock < quantity) {
+    throw new Error("Not enough stock available");
+  }
+
+  Product.stock -= quantity;
+  await product.save();
+
+  return product;
+};
+
 
 const updateOrder = async (id, data) => {
   const order = await getOrderById(id);

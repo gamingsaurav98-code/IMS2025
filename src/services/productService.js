@@ -3,18 +3,21 @@ import uploadFile from "../utils/file.js";
 
 const createProduct = async (data, files) => {
   const uploadedFiles = await uploadFile(files);
-
-
-
+ 
 
   const createdProduct = await Product.create({
     ...data,
+   updatedProduct,
     imageUrls: uploadedFiles.map((item) => item?.url),
 
   });
- await createdProduct.save();
+
   return createdProduct;
 };
+
+
+
+
 
 const deleteProduct = async (id) => {
   const product = await getProductById(id);
