@@ -1,13 +1,17 @@
 {
-  "name": "ims202506",
+  "name": "ims2025-backend",
   "version": "0.1.0",
   "type": "module",
-  "description": "MERN Stack project",
-  "main": "server.js",
+  "description": "IMS2025 Backend - Inventory Management System",
+  "main": "src/app.js",
   "scripts": {
-    "test": "echo \"Error:no test specified\" && exit 1",
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": "18.x",
+    "npm": "9.x"
   },
   "keywords": [
     "inventory",
@@ -21,6 +25,7 @@
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "cloudinary": "^2.8.0",
+    "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
